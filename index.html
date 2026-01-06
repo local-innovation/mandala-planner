@@ -177,8 +177,6 @@
       margin-bottom: 16px;
       box-shadow: 0 2px 12px rgba(24,24,27,0.2);
     }
-    .goal-left { text-align: center; }
-    .goal-right { display: none; }
     .goal-label {
       font-size: 9px;
       font-weight: 600;
@@ -205,12 +203,7 @@
     }
 
     /* Mandala Grid */
-    .mandala-wrapper {
-      overflow: visible;
-    }
-    .scroll-hint {
-      display: none;
-    }
+    .mobile-mandala { display: none; }
     .mandala {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -787,174 +780,181 @@
     /* Responsive */
     @media (max-width: 768px) {
       .header-inner {
-        padding: 8px 12px;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .brand { 
-        width: 100%;
-        justify-content: space-between;
+        padding: 10px 12px;
       }
       .brand-text { font-size: 14px; }
       .brand-sub { font-size: 10px; }
       .brand-icon { width: 28px; height: 28px; font-size: 11px; }
       .nav {
         width: 100%;
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        gap: 4px;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        -webkit-overflow-scrolling: touch;
-      }
-      .nav::-webkit-scrollbar { display: none; }
-      .btn {
-        height: 30px;
-        padding: 0 8px;
-        font-size: 11px;
-        flex-shrink: 0;
-      }
-      .btn-icon { width: 30px; }
-      .divider { display: none; }
-      .main { padding: 8px; }
-      .card { padding: 10px; border-radius: var(--radius); }
-      
-      /* Goal - コンパクト */
-      .goal-hero {
-        padding: 10px 12px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-align: left;
-      }
-      .goal-left { flex: 1; text-align: left; }
-      .goal-right { display: block; text-align: right; }
-      .goal-label { font-size: 7px; margin-bottom: 1px; }
-      .goal-text { font-size: 13px; margin-bottom: 0; }
-      .goal-progress { font-size: 10px; margin-top: 0; }
-      .goal-progress span { font-size: 20px; }
-      
-      /* Mandala - 横スクロール可能 */
-      .mandala-wrapper {
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        margin: 0 -10px;
-        padding: 0 10px 10px;
-      }
-      .mandala-wrapper::-webkit-scrollbar { display: none; }
-      .mandala {
-        gap: 3px;
-        min-width: 480px;
-        width: 480px;
-      }
-      .block { border-width: 2px; border-radius: 6px; }
-      .block-inner { gap: 1px; padding: 1px; }
-      .cell { border-radius: 3px; }
-      .cell-btn { padding: 2px; }
-      .cell-name { 
-        font-size: 8px; 
-        line-height: 1.2;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-      }
-      .cell-pct { font-size: 6px; margin-top: 1px; }
-      .cell-center .cell-name { font-size: 9px; }
-      .badge { width: 8px; height: 8px; font-size: 5px; top: 1px; right: 1px; }
-      
-      /* スクロールヒント */
-      .scroll-hint {
-        display: flex;
-        text-align: center;
-        font-size: 10px;
-        color: var(--text-muted);
-        padding: 6px 0;
-        align-items: center;
         justify-content: center;
+        flex-wrap: wrap;
         gap: 4px;
       }
-      .scroll-hint svg {
+      .btn {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 12px;
+      }
+      .btn-icon { width: 32px; }
+      .divider { display: none; }
+      .main { padding: 12px 8px; }
+      .card { padding: 12px; border-radius: var(--radius); }
+      .goal-hero {
+        padding: 12px 14px;
+        margin-bottom: 12px;
+      }
+      .goal-label { font-size: 8px; margin-bottom: 2px; }
+      .goal-text { font-size: 14px; }
+      .goal-progress { font-size: 10px; margin-top: 4px; }
+      .goal-progress span { font-size: 16px; }
+      
+      /* PC用マンダラを非表示 */
+      .mandala { display: none; }
+      .legend { display: none; }
+      
+      /* モバイル用3x3ブロック表示 */
+      .mobile-mandala { display: block; }
+      .mobile-block-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+        justify-content: center;
+      }
+      .mobile-block-btn {
+        width: calc(33.33% - 4px);
+        padding: 8px 4px;
+        font-size: 10px;
+        font-weight: 500;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-card);
+        cursor: pointer;
+        text-align: center;
+        transition: all var(--transition);
+        color: var(--text);
+        font-family: inherit;
+      }
+      .mobile-block-btn.active {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: white;
+      }
+      .mobile-block-btn .btn-pct {
+        font-size: 9px;
+        opacity: 0.7;
+        display: block;
+        margin-top: 2px;
+      }
+      .mobile-single-block {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        padding: 12px;
+        box-shadow: var(--shadow);
+      }
+      .mobile-single-block .block {
+        width: 100%;
+        border-radius: var(--radius);
+      }
+      .mobile-single-block .block-inner {
+        gap: 4px;
+        padding: 4px;
+      }
+      .mobile-single-block .cell {
+        border-radius: 6px;
+      }
+      .mobile-single-block .cell-btn {
+        padding: 8px 4px;
+        min-height: 60px;
+      }
+      .mobile-single-block .cell-name {
+        font-size: 12px;
+        line-height: 1.3;
+      }
+      .mobile-single-block .cell-pct {
+        font-size: 10px;
+        margin-top: 4px;
+      }
+      .mobile-single-block .cell-center .cell-name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .mobile-single-block .badge {
         width: 14px;
         height: 14px;
-        animation: swipe 1.5s ease-in-out infinite;
+        font-size: 8px;
+        top: 4px;
+        right: 4px;
       }
-      @keyframes swipe {
-        0%, 100% { transform: translateX(0); }
-        50% { transform: translateX(5px); }
+      .mobile-block-title {
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--text);
       }
-      
-      .legend { 
-        gap: 8px; 
-        padding: 8px 0;
-        margin-top: 8px;
-        flex-wrap: wrap;
-        justify-content: center;
+      .mobile-block-title span {
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--text-muted);
+        margin-left: 8px;
       }
-      .legend-item { font-size: 8px; gap: 3px; }
-      .legend-dot { width: 6px; height: 6px; }
       
       /* Modal mobile */
-      .overlay { padding: 0; align-items: flex-end; }
+      .overlay { padding: 8px; }
       .modal {
-        max-height: 92vh;
-        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        animation: slideUp 250ms ease;
+        max-height: 90vh;
+        border-radius: var(--radius);
       }
-      @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-      }
-      .modal-head { padding: 14px 16px; }
-      .modal-title { font-size: 15px; }
+      .modal-head { padding: 12px 14px; }
+      .modal-title { font-size: 14px; }
       .modal-sub { font-size: 11px; }
-      .modal-body { padding: 16px; }
-      .modal-foot { padding: 12px 16px; }
-      .modal-close { width: 28px; height: 28px; }
+      .modal-body { padding: 14px; }
+      .modal-foot { padding: 12px 14px; }
+      .modal-close { width: 26px; height: 26px; }
       
       /* Form mobile */
       .field { margin-bottom: 12px; }
       .label { font-size: 11px; margin-bottom: 4px; }
-      .input { height: 40px; padding: 0 12px; font-size: 16px; }
-      textarea.input { padding: 10px 12px; min-height: 80px; }
+      .input { height: 36px; padding: 0 10px; font-size: 14px; }
+      textarea.input { padding: 8px 10px; min-height: 60px; }
       .row { flex-direction: column; gap: 8px; }
       
       /* Task mobile */
-      .task { padding: 12px; gap: 10px; }
-      .task-check { width: 20px; height: 20px; }
-      .task-name { font-size: 14px; }
-      .task-meta { font-size: 11px; gap: 8px; margin-top: 3px; }
-      .task-del { padding: 8px 10px; }
+      .task { padding: 10px; gap: 8px; }
+      .task-check { width: 18px; height: 18px; }
+      .task-name { font-size: 13px; }
+      .task-meta { font-size: 10px; gap: 6px; margin-top: 2px; }
+      .task-del { padding: 6px 8px; }
       
       /* Stats mobile */
       .stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-      .stat { padding: 12px 8px; }
-      .stat-val { font-size: 20px; }
-      .stat-label { font-size: 9px; }
+      .stat { padding: 10px 8px; }
+      .stat-val { font-size: 18px; }
+      .stat-label { font-size: 8px; }
       
       /* Section mobile */
       .section { margin-bottom: 16px; }
-      .section-title { font-size: 12px; }
-      .section-badge { font-size: 10px; padding: 2px 8px; }
+      .section-title { font-size: 11px; }
+      .section-badge { font-size: 9px; padding: 1px 6px; }
       
       /* Chips mobile */
-      .chips { gap: 6px; margin-bottom: 12px; }
-      .chip { height: 28px; padding: 0 10px; font-size: 11px; }
-      .chip-label { font-size: 11px; }
+      .chips { gap: 4px; margin-bottom: 10px; }
+      .chip { height: 26px; padding: 0 9px; font-size: 10px; }
+      .chip-label { font-size: 10px; }
       
       /* Matrix mobile */
       .matrix { grid-template-columns: 1fr; gap: 8px; }
       .quadrant { min-height: 100px; padding: 12px; }
-      .quadrant-title { font-size: 12px; }
-      .quadrant-count { font-size: 10px; padding: 2px 8px; }
-      .quadrant-sub { font-size: 10px; }
+      .quadrant-title { font-size: 11px; }
+      .quadrant-count { font-size: 9px; padding: 1px 6px; }
+      .quadrant-sub { font-size: 9px; }
       
       /* Element card mobile */
       .el-card { margin-bottom: 8px; }
-      .el-head { padding: 10px 12px; }
-      .el-name { font-size: 13px; }
+      .el-head { padding: 8px 10px; }
+      .el-name { font-size: 12px; }
       .el-pct { font-size: 10px; }
       .el-memo { padding: 6px 10px; font-size: 11px; }
       .el-tasks { padding: 6px 10px; }
@@ -1628,6 +1628,7 @@ var S = {
   review:false,
   matrix:false,
   history:false,
+  mobileBlock:-1,  // -1=中央, 0-7=カテゴリ
   milestones:[]
 };
 var histStack=[];
@@ -1710,6 +1711,136 @@ function getCell(r,c){
   return null;
 }
 
+// Mobile block selector
+function selectMobileBlock(idx){
+  S.mobileBlock=idx;
+  render();
+}
+
+// Render mobile mandala (3x3 block)
+function renderMobileMandala(){
+  var h='<div class="mobile-mandala">';
+  
+  // Navigation buttons (カテゴリ選択)
+  h+='<div class="mobile-block-nav">';
+  // 中央ブロック
+  h+='<button class="mobile-block-btn'+(S.mobileBlock===-1?' active':'')+'" onclick="selectMobileBlock(-1)" style="width:100%">';
+  h+='中央（8カテゴリ）';
+  var totalProg=0;for(var i=0;i<S.data.categories.length;i++)totalProg+=calcCatProg(S.data.categories[i]);
+  totalProg=Math.round(totalProg/8);
+  h+='<span class="btn-pct">'+totalProg+'%</span>';
+  h+='</button>';
+  
+  // 8カテゴリボタン
+  for(var i=0;i<8;i++){
+    var cat=S.data.categories[i];
+    var col=S.colors[i];
+    var prog=calcCatProg(cat);
+    var active=S.mobileBlock===i?' active':'';
+    var style=active?'':'border-color:'+col.border+';';
+    h+='<button class="mobile-block-btn'+active+'" onclick="selectMobileBlock('+i+')" style="'+style+'">';
+    h+=(cat.name||'カテゴリ'+(i+1));
+    h+='<span class="btn-pct">'+prog+'%</span>';
+    h+='</button>';
+  }
+  h+='</div>';
+  
+  // 選択されたブロックを大きく表示
+  h+='<div class="mobile-single-block">';
+  
+  if(S.mobileBlock===-1){
+    // 中央ブロック（8カテゴリ + 中心目標）
+    h+='<div class="mobile-block-title">カテゴリ一覧</div>';
+    h+=renderCenterBlock();
+  }else{
+    // カテゴリブロック
+    var cat=S.data.categories[S.mobileBlock];
+    var col=S.colors[S.mobileBlock];
+    h+='<div class="mobile-block-title" style="color:'+col.border+'">'+(cat.name||'カテゴリ'+(S.mobileBlock+1))+'<span>'+calcCatProg(cat)+'%</span></div>';
+    h+=renderCategoryBlock(S.mobileBlock);
+  }
+  
+  h+='</div>';
+  h+='</div>';
+  return h;
+}
+
+// Render center block (3x3 with categories)
+function renderCenterBlock(){
+  var h='<div class="block" style="border-color:'+S.centerColor.border+';background:'+S.centerColor.bg+'">';
+  h+='<div class="block-inner">';
+  for(var r=0;r<3;r++){
+    for(var c=0;c<3;c++){
+      if(r===1&&c===1){
+        // 中央の目標
+        h+='<div class="cell cell-center" style="background:'+S.centerColor.center+'">';
+        h+='<button class="cell-btn" onclick="openCenterGoal()" style="color:white">';
+        h+='<span class="cell-name">'+(S.data.centerGoal||'目標を設定')+'</span>';
+        h+='</button></div>';
+      }else{
+        var ci=elMap[r][c];
+        var cat=S.data.categories[ci];
+        var col=S.colors[ci];
+        var prog=calcCatProg(cat);
+        var pc=progColor(prog);
+        h+='<div class="cell" style="background:'+pc.bg+'">';
+        h+='<button class="cell-btn" onclick="selectMobileBlock('+ci+')">';
+        h+='<span class="cell-name">'+(cat.name||'カテゴリ'+(ci+1))+'</span>';
+        h+='<span class="cell-pct" style="color:'+pc.text+'">'+prog+'%</span>';
+        h+='</button></div>';
+      }
+    }
+  }
+  h+='</div></div>';
+  return h;
+}
+
+// Render category block (3x3 with elements)
+function renderCategoryBlock(ci){
+  var cat=S.data.categories[ci];
+  var col=S.colors[ci];
+  var h='<div class="block" style="border-color:'+col.border+';background:'+col.bg+'">';
+  h+='<div class="block-inner">';
+  for(var r=0;r<3;r++){
+    for(var c=0;c<3;c++){
+      if(r===1&&c===1){
+        // カテゴリ中央
+        var prog=calcCatProg(cat);
+        h+='<div class="cell cell-center" style="background:'+col.center+'">';
+        h+='<button class="cell-btn" onclick="openCatMemo('+ci+')" style="color:white">';
+        h+='<span class="cell-name">'+(cat.name||'カテゴリ'+(ci+1))+'</span>';
+        h+='<span class="cell-pct" style="color:rgba(255,255,255,0.8)">'+prog+'%</span>';
+        h+='</button></div>';
+      }else{
+        var ei=elMap[r][c];
+        var el=cat.elements[ei];
+        var prog=calcProg(el.tasks);
+        var pc=progColor(prog);
+        var badge=getBadge(el);
+        h+='<div class="cell" style="background:'+pc.bg+'">';
+        h+='<button class="cell-btn" onclick="openEl('+ci+','+ei+')">';
+        h+='<span class="cell-name">'+(el.name||'')+'</span>';
+        h+='<span class="cell-pct" style="color:'+pc.text+'">'+prog+'%</span>';
+        if(badge)h+='<span class="badge" style="background:'+badge.bg+'" title="'+badge.tip+'">'+badge.txt+'</span>';
+        h+='</button></div>';
+      }
+    }
+  }
+  h+='</div></div>';
+  return h;
+}
+
+// 中心目標を設定するためのダイアログ
+function openCenterGoal(){
+  var goal=prompt('中心の目標を入力してください',S.data.centerGoal||'');
+  if(goal!==null){
+    saveHist();
+    S.data.centerGoal=goal;
+    save();
+    render();
+  }
+}
+
 // ===== Render =====
 function renderUserMenu() {
   if (!currentUser) return '';
@@ -1784,22 +1915,13 @@ function render(){
   
   // 中心ゴール（大きく表示）
   h+='<div class="goal-hero">';
-  h+='<div class="goal-left">';
   h+='<div class="goal-label">GOAL</div>';
   h+='<div class="goal-text">'+(S.data.centerGoal||'中心の目標マスをクリックして設定')+'</div>';
-  h+='</div>';
-  h+='<div class="goal-right">';
-  h+='<div class="goal-progress"><span>'+prog+'%</span></div>';
-  h+='<div style="font-size:10px;color:rgba(255,255,255,0.6)">達成</div>';
-  h+='</div>';
+  h+='<div class="goal-progress"><span>'+prog+'%</span> 達成</div>';
   h+='</div>';
   
-  // スマホ用スクロールヒント
-  h+='<div class="scroll-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 5l7 7-7 7M3 12h18"/></svg>横スクロールできます</div>';
-  
-  h+='<div class="mandala-wrapper">';
   h+='<div class="mandala">'+renderMandala()+'</div>';
-  h+='</div>';
+  h+=renderMobileMandala();
   h+='<div class="legend">';
   h+='<div class="legend-item"><div class="legend-dot" style="background:#f4f4f5"></div>0%</div>';
   h+='<div class="legend-item"><div class="legend-dot" style="background:#fee2e2"></div>1-49%</div>';
