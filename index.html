@@ -1333,6 +1333,8 @@ async function signOut() {
 }
 
 // ===== Cloud Save/Load =====
+var unsubscribeFirestore = null;
+
 async function loadFromCloud() {
   if (!currentUser) return false;
   
@@ -1350,6 +1352,62 @@ async function loadFromCloud() {
     console.error('Cloud load error:', e);
   }
   return false;
+}
+
+// リアルタイムリスナーを開始
+function startRealtimeSync() {
+  if (!currentUser || unsubscribeFirestore) return;
+  
+  unsubscribeFirestore = db.collection('users').doc(currentUser.uid)
+    .onSnapshot(function(doc) {
+      if (doc.exists && !syncing) {
+        var data = doc.data();
+        var changed = false;
+        
+        // データが変更されているかチェック
+        if (data.mandalaData && JSON.stringify(data.mandalaData) !== JSON.stringify(S.data)) {
+          S.data = data.mandalaData;
+          changed = true;
+        }
+        if (data.colors && JSON.stringify(data.colors) !== JSON.stringify(S.colors)) {
+          S.colors = data.colors;
+          changed = true;
+        }
+        if (data.centerColor && JSON.stringify(data.centerColor) !== JSON.stringify(S.centerColor)) {
+          S.centerColor = data.centerColor;
+          changed = true;
+        }
+        if (data.milestones && JSON.stringify(data.milestones) !== JSON.stringify(S.milestones)) {
+          S.milestones = data.milestones;
+          changed = true;
+        }
+        
+        if (changed) {
+          console.log('Realtime update received');
+          // ローカルストレージも更新
+          try {
+            localStorage.setItem('mandala-data', JSON.stringify(S.data));
+            localStorage.setItem('mandala-colors', JSON.stringify({blockColors: S.colors, centerColor: S.centerColor}));
+            localStorage.setItem('mandala-milestones', JSON.stringify(S.milestones));
+          } catch(e) {}
+          
+          // モーダルが開いていない場合のみ再描画
+          if (!S.selEl && !S.colorPicker && !S.taskList && !S.catMemo && !S.today && !S.review && !S.matrix && !S.history) {
+            render();
+          }
+        }
+      }
+    }, function(error) {
+      console.error('Realtime sync error:', error);
+    });
+}
+
+// リアルタイムリスナーを停止
+function stopRealtimeSync() {
+  if (unsubscribeFirestore) {
+    unsubscribeFirestore();
+    unsubscribeFirestore = null;
+  }
 }
 
 async function saveToCloud() {
@@ -1370,8 +1428,11 @@ async function saveToCloud() {
     console.error('Cloud save error:', e);
   }
   
-  syncing = false;
-  updateSyncStatus();
+  // 少し待ってからsyncingをfalseにする（自分の変更を受け取らないように）
+  setTimeout(function() {
+    syncing = false;
+    updateSyncStatus();
+  }, 500);
 }
 
 function updateSyncStatus() {
@@ -2379,6 +2440,9 @@ document.addEventListener('keydown',function(e){
 
 // Auth state listener
 auth.onAuthStateChanged(async function(user) {
+  // 前のユーザーのリスナーを停止
+  stopRealtimeSync();
+  
   currentUser = user;
   authLoading = false;
   
@@ -2391,6 +2455,8 @@ auth.onAuthStateChanged(async function(user) {
       // Save local data to cloud
       saveToCloud();
     }
+    // リアルタイム同期を開始
+    startRealtimeSync();
   } else {
     // Not logged in - load from local storage for now
     load();
