@@ -1334,6 +1334,7 @@ async function signOut() {
 
 // ===== Cloud Save/Load =====
 var unsubscribeFirestore = null;
+var lastSaveTime = 0;
 
 async function loadFromCloud() {
   if (!currentUser) return false;
@@ -1358,9 +1359,17 @@ async function loadFromCloud() {
 function startRealtimeSync() {
   if (!currentUser || unsubscribeFirestore) return;
   
+  console.log('Starting realtime sync...');
+  
   unsubscribeFirestore = db.collection('users').doc(currentUser.uid)
     .onSnapshot(function(doc) {
-      if (doc.exists && !syncing) {
+      // 自分が保存した直後（2秒以内）は無視
+      if (Date.now() - lastSaveTime < 2000) {
+        console.log('Ignoring own change');
+        return;
+      }
+      
+      if (doc.exists) {
         var data = doc.data();
         var changed = false;
         
@@ -1383,7 +1392,7 @@ function startRealtimeSync() {
         }
         
         if (changed) {
-          console.log('Realtime update received');
+          console.log('Realtime update received - rerendering');
           // ローカルストレージも更新
           try {
             localStorage.setItem('mandala-data', JSON.stringify(S.data));
@@ -1391,15 +1400,15 @@ function startRealtimeSync() {
             localStorage.setItem('mandala-milestones', JSON.stringify(S.milestones));
           } catch(e) {}
           
-          // モーダルが開いていない場合のみ再描画
-          if (!S.selEl && !S.colorPicker && !S.taskList && !S.catMemo && !S.today && !S.review && !S.matrix && !S.history) {
-            render();
-          }
+          // 強制的に再描画
+          render();
         }
       }
     }, function(error) {
       console.error('Realtime sync error:', error);
     });
+    
+  console.log('Realtime sync started');
 }
 
 // リアルタイムリスナーを停止
@@ -1407,6 +1416,7 @@ function stopRealtimeSync() {
   if (unsubscribeFirestore) {
     unsubscribeFirestore();
     unsubscribeFirestore = null;
+    console.log('Realtime sync stopped');
   }
 }
 
@@ -1414,6 +1424,7 @@ async function saveToCloud() {
   if (!currentUser) return;
   
   syncing = true;
+  lastSaveTime = Date.now();
   updateSyncStatus();
   
   try {
@@ -1424,15 +1435,13 @@ async function saveToCloud() {
       milestones: S.milestones,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    console.log('Saved to cloud');
   } catch (e) {
     console.error('Cloud save error:', e);
   }
   
-  // 少し待ってからsyncingをfalseにする（自分の変更を受け取らないように）
-  setTimeout(function() {
-    syncing = false;
-    updateSyncStatus();
-  }, 500);
+  syncing = false;
+  updateSyncStatus();
 }
 
 function updateSyncStatus() {
